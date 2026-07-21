@@ -1,0 +1,58 @@
+DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS votes CASCADE;
+DROP TABLE IF EXISTS songs CASCADE;
+DROP TABLE IF EXISTS parties CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  display_name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  favorite_genres TEXT[] DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE parties (
+  id SERIAL PRIMARY KEY,
+  host_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(150) NOT NULL,
+  description TEXT,
+  genre VARCHAR(100),
+  join_code VARCHAR(20) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE songs (
+  id SERIAL PRIMARY KEY,
+  party_id INTEGER NOT NULL REFERENCES parties(id) ON DELETE CASCADE,
+  submitted_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  title VARCHAR(200) NOT NULL,
+  artist VARCHAR(200) NOT NULL,
+  song_url TEXT,
+  genre VARCHAR(100),
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE votes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  song_id INTEGER NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+  vote_value INTEGER NOT NULL CHECK (vote_value IN (-1, 1)),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (user_id, song_id)
+);
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  song_id INTEGER NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  comment_text TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_parties_host_id ON parties(host_id);
+CREATE INDEX idx_songs_party_id ON songs(party_id);
+CREATE INDEX idx_votes_song_id ON votes(song_id);
+CREATE INDEX idx_comments_song_id ON comments(song_id);
