@@ -1,0 +1,163 @@
+.profile-page {
+  max-width: 1060px;
+  padding-top: 3.3rem;
+  padding-bottom: 4rem;
+}
+
+.profile-hero {
+  display: flex;
+  margin-bottom: 2rem;
+  padding: 2.2rem;
+  align-items: center;
+  gap: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(110deg, color-mix(in srgb, var(--primary-color) 20%, var(--surface-color)), var(--surface-color));
+}
+
+.profile-avatar-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.profile-avatar {
+  display: grid;
+  width: 132px;
+  height: 132px;
+  overflow: hidden;
+  place-items: center;
+  border: 5px solid color-mix(in srgb, var(--white) 80%, transparent);
+  border-radius: 50%;
+  color: #292b24;
+  background: var(--primary-color);
+  box-shadow: 0 14px 30px rgba(var(--shadow-color), 0.13);
+  font-size: 3.1rem;
+  font-weight: 800;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-edit {
+  position: absolute;
+  right: 2px;
+  bottom: 4px;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  place-items: center;
+  border: 3px solid var(--surface-color);
+  border-radius: 50%;
+  color: #292b24;
+  background: var(--primary-color);
+}
+
+.profile-copy h1 {
+  margin-bottom: 0.35rem;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.profile-copy > p:not(.eyebrow) {
+  margin-bottom: 1.15rem;
+  color: var(--muted-text-color);
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.text-button {
+  border: 0;
+  color: var(--muted-text-color);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.favorites-section {
+  min-height: 330px;
+  padding: 1.7rem;
+}
+
+.profile-favorites-grid {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 1.5rem;
+  list-style: none;
+}
+
+.empty-state {
+  display: flex;
+  max-width: 430px;
+  margin: 1.4rem auto 0.5rem;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.empty-state > span {
+  display: grid;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.85rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--primary-hover-color);
+  background: var(--surface-color);
+  font-size: 1.7rem;
+}
+
+.empty-state h3 {
+  margin-bottom: 0.35rem;
+}
+
+.empty-state p {
+  margin-bottom: 1.1rem;
+  color: var(--muted-text-color);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .profile-page {
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .profile-hero {
+    padding: 1.6rem;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-actions {
+    justify-content: center;
+  }
+
+  .profile-favorites-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .profile-avatar {
+    width: 112px;
+    height: 112px;
+  }
+
+  .favorites-section {
+    padding: 1.2rem;
+  }
+}
