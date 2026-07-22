@@ -4,6 +4,23 @@
   padding-bottom: 4rem;
 }
 
+
+.join-audio-button {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.join-audio-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
 .page-heading {
   max-width: 720px;
   margin: 0 auto 2rem;
@@ -303,3 +320,4 @@
     flex: 1;
   }
 }
+

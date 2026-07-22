@@ -23,35 +23,69 @@ export default function CreatePartyPage() {
     setErrors((current) => ({ ...current, [name]: '' }));
   }
 
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
+  
     const nextErrors = {};
-    if (!form.name.trim()) nextErrors.name = 'Enter a party name.';
-    if (!form.genre) nextErrors.genre = 'Choose a genre.';
-    if (!form.visibility) nextErrors.visibility = 'Choose a visibility.';
-    if (!form.permissionLevel) nextErrors.permissionLevel = 'Choose a permission level.';
-
+  
+    if (!form.name.trim()) {
+      nextErrors.name = 'Enter a party name.';
+    }
+  
+    if (!form.genre) {
+      nextErrors.genre = 'Choose a genre.';
+    }
+  
+    if (!form.visibility) {
+      nextErrors.visibility = 'Choose a visibility.';
+    }
+  
+    if (!form.permissionLevel) {
+      nextErrors.permissionLevel = 'Choose a permission level.';
+    }
+  
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       return;
     }
-
-    const party = createMockParty({ ...form, name: form.name.trim(), description: form.description.trim() });
-    navigate('/home', {
-      replace: true,
-      state: { message: `“${party.name}” is live. Room code: ${party.roomCode}` },
-    });
+  
+    try {
+      const party = await createMockParty({
+        name: form.name.trim(),
+        description: form.description.trim(),
+        genre: form.genre,
+        visibility: form.visibility,
+        permissionLevel: Number(form.permissionLevel),
+      });
+  
+      navigate('/home', {
+        replace: true,
+        state: {
+          message: `“${party.name}” is live. Room code: ${party.roomCode}`,
+        },
+      });
+    } catch (error) {
+      setErrors({
+        form: error.message,
+      });
+    }
   }
 
   return (
     <main className="create-page page-container">
       <div className="page-heading">
-        <p className="eyebrow">Start the room</p>
-        <h1>Create a party</h1>
-        <p>Set the tone and decide how much control to share with the crowd.</p>
-      </div>
+              <p className="eyebrow">Start the room</p>
+              <h1>Create a party</h1>
+              <p>Set the tone and decide how much control to share with the crowd.</p>
+        </div>
 
-      <form className="create-card" onSubmit={submit} noValidate>
+            {errors.form && (
+              <div className="inline-notice" role="alert">
+                {errors.form}
+              </div>
+            )}
+
+            <form className="create-card" onSubmit={submit} noValidate>
         <section className="form-section" aria-labelledby="basics-heading">
           <div className="form-section-heading">
             <span>01</span>

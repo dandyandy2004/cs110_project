@@ -8,12 +8,14 @@ const partyRoutes = require("./routes/parties");
 const songRoutes = require("./routes/songs");
 const commentRoutes = require("./routes/comments");
 const voteRoutes = require("./routes/votes");
+const musicRoutes = require("./routes/music");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
 
 app.get("/", (req, res) => {
   res.send("Party Music API is running");
@@ -25,6 +27,7 @@ app.use("/api/parties", partyRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/votes", voteRoutes);
+app.use("/api/music", musicRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
