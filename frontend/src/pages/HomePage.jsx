@@ -64,6 +64,9 @@ export default function HomePage() {
     addToQueue,
     playSong,
     toggleFavorite,
+    userVotes,
+    handleVote,
+    handleToggleComments,
   } = useMusic();
 
   const [modalType, setModalType] =
@@ -455,6 +458,10 @@ export default function HomePage() {
               playDisabled={
                 !canControl
               }
+              userVotes={userVotes}
+              onVote={handleVote}
+              commentCounts={commentCounts}
+              onToggleComments={handleToggleComments}
             />
 
             {currentSong ? (

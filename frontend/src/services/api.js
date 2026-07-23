@@ -123,7 +123,7 @@ export async function voteOnSong(songId, voteValue, token) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      value: voteValue,
+      voteValue: voteValue,
     }),
   });
 }
@@ -136,7 +136,7 @@ export async function addComment(songId, content, token) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      content,
+      commentText: commentText,
     }),
   });
 }

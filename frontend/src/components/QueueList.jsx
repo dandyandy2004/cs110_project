@@ -7,6 +7,10 @@ export default function QueueList({
   favoriteDisabled,
   onPlay,
   playDisabled,
+  userVotes = {},
+  commentCounts = {},
+  onVote,
+  onToggleComments,
 }) {
   return (
     <section

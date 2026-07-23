@@ -5,7 +5,13 @@ export default function SongListItem({
   onFavorite,
   favoriteDisabled = false,
   action,
+  userVote = 0,
+  onVote,
+  onToggleComments,
+  commentCount = 0
 }) {
+  const voteScore = song.vote_score ?? song.voteScore ?? 0;
+
   return (
     <li className="song-list-item">
       {typeof index === 'number' && <span className="song-number" aria-hidden="true">{index + 1}</span>}
@@ -16,6 +22,38 @@ export default function SongListItem({
       </div>
       <div className="song-item-actions">
         {action}
+      
+      <div className="vote-group">
+          <button
+            className={`vote-button ${userVote === 1 ? 'voted-up' : ''}`}
+            type="button"
+            onClick={() => onVote?.(song, userVote === 1 ? 0 : 1)}
+            aria-label={`Upvote ${song.title}`}
+          >
+            ▲
+          </button>
+          <span className="vote-score">{voteScore}</span>
+          <button
+            className={`vote-button ${userVote === -1 ? 'voted-down' : ''}`}
+            type="button"
+            onClick={() => onVote?.(song, userVote === -1 ? 0 : -1)}
+            aria-label={`Downvote ${song.title}`}
+          >
+            ▼
+          </button>
+        </div>
+
+        {OnToggleComments && (
+          <button
+            className="comment-toggle-button"
+            type="button"
+            onClick={onToggleComments}
+            aria-label={`Comments for ${song.title}`}
+          >
+            💬 <span>{commentCount}</span>
+          </button>
+        )}
+
         <button
           className={`heart-button ${isFavorite ? 'is-favorite' : ''}`}
           type="button"
