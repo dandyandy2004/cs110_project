@@ -29,18 +29,18 @@ router.post("/register", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users
-        (username, display_name, email, password_hash, favorite_genres)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, username, display_name, email, favorite_genres, created_at`,
-      [
-        username,
-        displayName || username,
-        email,
-        passwordHash,
-        favoriteGenres || []
-      ]
-    );
+  `INSERT INTO users
+   (username, display_name, email, password_hash, favorite_genres)
+   VALUES ($1, $2, $3, $4, $5)
+   RETURNING id, username, display_name, email, favorite_genres, created_at`,
+  [
+    username,
+    displayName || username,
+    email,
+    passwordHash,
+    Array.isArray(favoriteGenres) ? favoriteGenres : []
+  ]
+);
 
     const user = result.rows[0];
 
@@ -51,11 +51,19 @@ router.post("/register", async (req, res) => {
     );
 
     res.status(201).json({ token, user });
-  } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({ error: "Could not register user" });
+    } catch (error) {
+    console.error("Register error:");
+    console.error(error);
+    console.error("Message:", error.message);
+    console.error("Detail:", error.detail);
+    console.error("Code:", error.code);
+
+    res.status(500).json({
+      error: error.message,
+      detail: error.detail
+    });
   }
-});
+}); // <-- THIS closes router.post("/register")
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -99,10 +107,16 @@ router.post("/login", async (req, res) => {
         favorite_genres: user.favorite_genres
       }
     });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ error: "Could not log in" });
-  }
+} catch (error) {
+  console.error("Login error:");
+  console.error(error);
+  console.error(error.message);
+  console.error(error.detail);
+
+  res.status(500).json({
+    error: error.message
+  });
+}
 });
 
 module.exports = router;
