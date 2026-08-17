@@ -1,7 +1,15 @@
 import { getPermissionLabel } from '../utils/permissions';
 
+
+
+
+
 export default function PartyInfoCard({ party, role, onInvite, onJoin, onCreate }) {
+  if (!party) {
+    return null;
+  }
   return (
+    
     <section className="party-card" aria-labelledby="party-title">
       <div className="party-card-copy">
         <div className="party-eyebrow">

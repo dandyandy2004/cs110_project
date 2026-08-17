@@ -1,13 +1,25 @@
 import { createContext, useContext, useMemo, useState } from 'react';
+import { loginUser, registerUser } from '../services/api';
 
 const AuthContext = createContext(null);
+
 const AUTH_STORAGE_KEY = 'crowd-dj-auth';
 
 function getStoredAuth() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY)) || { isAuthenticated: false, user: null };
+    return (
+      JSON.parse(sessionStorage.getItem(AUTH_STORAGE_KEY)) || {
+        isAuthenticated: false,
+        user: null,
+        token: null,
+      }
+    );
   } catch {
-    return { isAuthenticated: false, user: null };
+    return {
+      isAuthenticated: false,
+      user: null,
+      token: null,
+    };
   }
 }
 
@@ -16,46 +28,90 @@ export function AuthProvider({ children }) {
 
   function saveAuth(nextAuth) {
     setAuth(nextAuth);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextAuth));
+    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextAuth));
   }
 
-  function login(identifier) {
-    const isEmail = identifier.includes('@');
-    const user = {
-      username: isEmail ? identifier.split('@')[0] : identifier,
-      email: isEmail ? identifier : `${identifier}@crowddj.mock`,
-      avatarUrl: null,
+  async function login(email, password) {
+    const data = await loginUser({
+      email,
+      password,
+    });
+
+    const nextAuth = {
+      isAuthenticated: true,
+      user: data.user,
+      token: data.token,
     };
-    saveAuth({ isAuthenticated: true, user });
-    return user;
+
+    saveAuth(nextAuth);
+
+    return data.user;
   }
 
-  function signup(userData) {
-    const user = { username: userData.username, email: userData.email, avatarUrl: null };
-    saveAuth({ isAuthenticated: true, user });
-    return user;
+  async function signup(userData) {
+    const data = await registerUser({
+      username: userData.username,
+      displayName: userData.displayName,
+      email: userData.email,
+      password: userData.password,
+      favoriteGenres: userData.favoriteGenres || [],
+    });
+
+    const nextAuth = {
+      isAuthenticated: true,
+      user: data.user,
+      token: data.token,
+    };
+
+    saveAuth(nextAuth);
+
+    return data.user;
   }
 
   function logout() {
-    saveAuth({ isAuthenticated: false, user: null });
+    saveAuth({
+      isAuthenticated: false,
+      user: null,
+      token: null,
+    });
   }
 
   function updateAvatar(avatarUrl) {
-    // Blob URLs only live for the current browser session, so keep the preview
-    // in memory rather than persisting an unusable URL after refresh.
-    setAuth({ ...auth, user: { ...auth.user, avatarUrl } });
+    const nextAuth = {
+      ...auth,
+      user: {
+        ...auth.user,
+        avatarUrl,
+      },
+    };
+
+    saveAuth(nextAuth);
   }
 
   const value = useMemo(
-    () => ({ ...auth, login, signup, logout, updateAvatar }),
+    () => ({
+      ...auth,
+      login,
+      signup,
+      logout,
+      updateAvatar,
+    }),
     [auth],
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+
   return context;
 }

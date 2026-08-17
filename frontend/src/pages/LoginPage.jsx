@@ -27,31 +27,53 @@ export default function LoginPage() {
   function validate() {
     const nextErrors = {};
     if (mode === 'login') {
-      if (!form.identifier.trim()) nextErrors.identifier = 'Enter a username or email.';
-    } else {
-      if (!form.username.trim()) nextErrors.username = 'Enter a username.';
-      if (!form.email.trim()) nextErrors.email = 'Enter an email address.';
-      else if (!emailPattern.test(form.email)) nextErrors.email = 'Enter a valid email address.';
+      if (!form.identifier.trim()) {
+        nextErrors.identifier = 'Enter an email address.';
+      } else if (!emailPattern.test(form.identifier)) {
+        nextErrors.identifier = 'Enter a valid email address.';
+      }
     }
     if (!form.password) nextErrors.password = 'Enter a password.';
     return nextErrors;
   }
 
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
+  
     const nextErrors = validate();
+  
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       return;
     }
-
-    if (mode === 'login') login(form.identifier.trim());
-    else signup({ username: form.username.trim(), email: form.email.trim() });
-
-    navigate(location.state?.from || '/home', {
-      replace: true,
-      state: { message: `Welcome ${mode === 'login' ? 'back' : 'to the crowd'}!` },
-    });
+  
+    try {
+      if (mode === 'login') {
+        await login(
+          form.identifier.trim(),
+          form.password
+        );
+      } else {
+        await signup({
+          username: form.username.trim(),
+          displayName: form.username.trim(),
+          email: form.email.trim(),
+          password: form.password,
+          favoriteGenres: [],
+        });
+      }
+  
+      navigate(location.state?.from || '/home', {
+        replace: true,
+        state: {
+          message: `Welcome ${mode === 'login' ? 'back' : 'to the crowd'}!`,
+        },
+      });
+    } catch (error) {
+      setErrors({
+        form: error.message,
+      });
+    }
   }
 
   function changeMode(nextMode) {
@@ -92,16 +114,21 @@ export default function LoginPage() {
             Sign up
           </button>
         </div>
-
+        {errors.form && (
+        <div className="inline-notice" role="alert">
+          {errors.form}
+        </div>
+        )}
         <form className="auth-form" onSubmit={submit} noValidate>
           {mode === 'login' ? (
             <FormField
               id="identifier"
-              label="Username or email"
+              label="Email"
+              type="email"
               value={form.identifier}
               onChange={updateField}
               error={errors.identifier}
-              autoComplete="username"
+              autoComplete="email"
               placeholder="you@example.com"
             />
           ) : (
@@ -152,7 +179,6 @@ export default function LoginPage() {
           Continue with Google
         </button>
         {providerMessage && <p className="provider-message" role="status">{providerMessage}</p>}
-        <p className="mock-caption">Mock authentication only · No credentials are sent</p>
       </section>
     </main>
   );
