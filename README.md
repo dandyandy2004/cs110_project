@@ -1,7 +1,11 @@
 # cs110_project
 # Crowd DJ 🎵
 
-Crowd DJ is a full-stack collaborative music queue application that allows users to create virtual music rooms where participants can search for songs, build a shared queue, and listen together. Each party has a designated host who controls playback, while guests can contribute songs, comment, and participate in the shared music experience. The application combines a modern React frontend with a Node.js/Express backend and a PostgreSQL database to provide a synchronized, real-time party environment.
+Crowd DJ is a full-stack collaborative music queue application that allows users to create virtual music rooms where participants ca![Uploading Screenshot 2026-08-17 at 2.30.23 PM.png…]()
+n search for songs, build a shared queue, and listen together. Each party has a designated host who controls playback, while guests can contribute songs, comment, and participate in the shared music experience. The application combines a modern React frontend with a Node.js/Express backend and a PostgreSQL database to provide a synchronized, real-time party environment.
+
+<img width="1457" height="825" alt="image" src="https://github.com/user-attachments/assets/5fad2daf-0135-47b3-a605-5699a2d36141" />
+
 
 This repository contains both the frontend and backend source code.
 
